@@ -1,10 +1,12 @@
 const { canais } = require("../mock/dados.json");
 const { Canal } = require("../models/Canal");
 const UsuarioPapel = require("../models/UsuarioPapel");
+const usuariosService = require("../services/usuariosService");
 
 class UsuarioDonoController {
   index(req, res) {
     try {
+      const canais = usuariosService.encontrarTodos();
       if (canais.length > 0) {
         res.status(200).json(canais);
       } else {
@@ -20,7 +22,11 @@ class UsuarioDonoController {
   show(req, res) {
     try {
       const id = parseInt(req.params.id);
-      const usuario = canais.find((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
+
+      const usuario = usuariosService.buscarPeloId(id);
 
       if (usuario) {
         res.status(200).json(usuario);
@@ -38,15 +44,15 @@ class UsuarioDonoController {
     try {
       const { nome, imagem, email } = req.body;
 
-      const novoVideo = new Canal (
+      const novoCanal = new Canal(
         nome,
         imagem,
         email,
         UsuarioPapel.USUARIO_DONO
       );
 
-      canais.push(novoVideo);
-      res.status(201).json(novoVideo);
+      usuariosService.adicionar(novoCanal);
+      res.status(201).json(novoCanal);
     } catch (erro) {
       res
         .status(500)
@@ -56,17 +62,16 @@ class UsuarioDonoController {
 
   update(req, res) {
     try {
-      const { nome, imagem, email } = req.body;
+      const body = req.body;
       const id = parseInt(req.params.id);
-      const usuario = canais.find((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
 
+      const usuario = usuariosService.atualizar(id, body);
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
-
-      usuario.nome = nome;
-      usuario.imagem = imagem;
-      usuario.email = email;
 
       res.status(200).json(usuario);
     } catch (erro) {
@@ -79,13 +84,16 @@ class UsuarioDonoController {
   delete(req, res) {
     try {
       const id = parseInt(req.params.id);
-      const indiceDoUsuario = canais.findIndex((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
 
-      if (indiceDoUsuario !== -1) {
-        const usuarioRemovido = canais.splice(indiceDoUsuario, 1);
+      const canalRemovido = usuariosService.excluir(id);
+
+      if (canalRemovido) {
         res.status(200).json({
           mensagem: `Usuário id:${id} removido com sucesso!`,
-          usuarioRemovido
+          canalRemovido
         });
       } else {
         res.status(404).json({ mensagem: "Usuário não encontrado" });
