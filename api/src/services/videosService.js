@@ -25,7 +25,7 @@ class videosService {
   }
 
   excluir(id) {
-    const indiceDoVideo = this.buscarPeloId(id);
+    const indiceDoVideo = videos.findIndex((v) => v.id === id);
 
     return videos.splice(indiceDoVideo, 1);
   }

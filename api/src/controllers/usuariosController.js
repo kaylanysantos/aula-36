@@ -1,10 +1,12 @@
-const { usuarios } = require("../mock/dados.json");
+const usuariosServices = require("../services/usuariosService");
 const { Usuario } = require("../models/Usuario");
 const UsuarioPapel = require("../models/UsuarioPapel");
 
 class UsuariosController {
   index(req, res) {
     try {
+      const usuarios = usuariosServices.encontrarTodos();
+
       if (usuarios.length > 0) {
         res.status(200).json(usuarios);
       } else {
@@ -20,7 +22,11 @@ class UsuariosController {
   show(req, res) {
     try {
       const id = parseInt(req.params.id);
-      const usuario = usuarios.find((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
+
+      const usuario = usuariosServices.buscarPeloId(id);
 
       if (usuario) {
         res.status(200).json(usuario);
@@ -38,9 +44,14 @@ class UsuariosController {
     try {
       const { nome, imagem, email } = req.body;
 
-      const novoUsuario = new Usuario(nome, imagem, email, UsuarioPapel.USUARIO_INSCRITO);
+      const novoUsuario = new Usuario(
+        nome,
+        imagem,
+        email,
+        UsuarioPapel.USUARIO_INSCRITO
+      );
 
-      usuarios.push(novoUsuario);
+      usuariosServices.adicionar(novoUsuario);
       res.status(201).json(novoUsuario);
     } catch (erro) {
       res
@@ -51,17 +62,16 @@ class UsuariosController {
 
   update(req, res) {
     try {
-      const { nome, imagem, email } = req.body;
+      const body = req.body;
       const id = parseInt(req.params.id);
-      const usuario = usuarios.find((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
 
+      const usuario = usuariosServices.atualizar(id, body);
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
-
-      usuario.nome = nome;
-      usuario.imagem = imagem;
-      usuario.email = email;
 
       res.status(200).json(usuario);
     } catch (erro) {
@@ -74,10 +84,13 @@ class UsuariosController {
   delete(req, res) {
     try {
       const id = parseInt(req.params.id);
-      const indiceDoUsuario = usuarios.findIndex((v) => v.id === id);
+      if (!id) {
+        throw new Error("O ID não foi passado");
+      }
 
-      if (indiceDoUsuario !== -1) {
-        const usuarioRemovido = usuarios.splice(indiceDoUsuario, 1);
+      const usuarioRemovido = usuariosServices.excluir(id);
+
+      if (usuarioRemovido) {
         res.status(200).json({
           mensagem: `Usuário id:${id} removido com sucesso!`,
           usuarioRemovido
