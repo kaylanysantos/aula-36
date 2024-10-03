@@ -58,8 +58,11 @@ class UsuarioDonoController {
     try {
       const { nome, imagem, email } = req.body;
       const id = parseInt(req.params.id);
-      const usuario = canais.find((v) => v.id === id);
+      if (isNaN(id)) {
+        throw new Error("O ID não foi passado");
+      }
 
+      const usuario = buscarPeloId(id);
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
