@@ -21,11 +21,11 @@ class videosController {
     try {
       const id = parseInt(req.params.id);
 
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
-      const video = videosService.buscarPeloId(id)
+      const video = videosService.buscarPeloId(id);
 
       if (video) {
         res.status(200).json(video);
@@ -58,16 +58,17 @@ class videosController {
     try {
       const body = req.body;
       const id = parseInt(req.params.id);
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
-      const video = videosService.atualizar(id, body)
+      const video = videosService.buscarPeloId(id);
 
       if (!video) {
         return res.status(404).json({ mensagem: "Vídeo não encontrado" });
       }
 
+      videosService.atualizar(id, body);
       res.status(200).json(video);
     } catch (erro) {
       res
@@ -79,12 +80,13 @@ class videosController {
   delete(req, res) {
     try {
       const id = parseInt(req.params.id);
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
-      const video = videosService.excluir(id);
+      const video = videosService.buscarPeloId(id);
       if (video) {
+        videosService.excluir(id);
         res.status(200).json({
           mensagem: `Vídeo id:${id} removido com sucesso!`,
           video

@@ -1,33 +1,33 @@
-const { usuarios } = require("../mock/dados.json");
+const { canais } = require("../mock/dados.json");
 
-class usuariosService {
+class canaisService {
   encontrarTodos() {
-    return usuarios;
+    return canais;
   }
 
   buscarPeloId(id) {
-    return usuarios.find((u) => u.id === id);
+    return canais.find((u) => u.id === id);
   }
 
   adicionar(usuario) {
-    return usuarios.push(usuario);
+    return canais.push(usuario);
   }
 
-  atualizar(id, usuarioAtualizado) {
-    const usuario = this.buscarPeloId(id);
+  atualizar(id, canalAtualizado) {
+    const canal = this.buscarPeloId(id);
 
-    usuario.nome = usuarioAtualizado.nome;
-    usuario.imagem = usuarioAtualizado.imagem;
-    usuario.email = usuarioAtualizado.email;
+    canal.nome = canalAtualizado.nome;
+    canal.imagem = canalAtualizado.imagem;
+    canal.email = canalAtualizado.email;
 
-    return usuario;
+    return canal;
   }
 
   excluir(id) {
-    const indiceDoUsuario = usuarios.findIndex((v) => v.id === id);
+    const indiceDoCanal = canais.findIndex((v) => v.id === id);
 
-    return usuarios.splice(indiceDoUsuario, 1);
+    return canais.splice(indiceDoCanal, 1);
   }
 }
 
-module.exports = new usuariosService();
+module.exports = new canaisService();

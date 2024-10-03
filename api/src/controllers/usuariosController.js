@@ -22,7 +22,7 @@ class UsuariosController {
   show(req, res) {
     try {
       const id = parseInt(req.params.id);
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
@@ -64,15 +64,16 @@ class UsuariosController {
     try {
       const body = req.body;
       const id = parseInt(req.params.id);
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
-      const usuario = usuariosServices.atualizar(id, body);
+      const usuario = usuariosServices.buscarPeloId(id);
       if (!usuario) {
         return res.status(404).json({ mensagem: "Usuário não encontrado" });
       }
 
+      usuariosServices.atualizar(id, body);
       res.status(200).json(usuario);
     } catch (erro) {
       res
@@ -84,13 +85,14 @@ class UsuariosController {
   delete(req, res) {
     try {
       const id = parseInt(req.params.id);
-      if (!id) {
+      if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
 
-      const usuarioRemovido = usuariosServices.excluir(id);
+      const usuarioRemovido = usuariosServices.buscarPeloId(id);
 
       if (usuarioRemovido) {
+        usuariosServices.excluir(id);
         res.status(200).json({
           mensagem: `Usuário id:${id} removido com sucesso!`,
           usuarioRemovido
