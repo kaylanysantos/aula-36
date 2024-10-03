@@ -1,7 +1,5 @@
 const { Canal } = require("../models/Canal");
 const UsuarioPapel = require("../models/UsuarioPapel");
-const { buscarPeloId } = require("../services/canaisService");
-const canaisService = require("../services/canaisService");
 
 class UsuarioDonoController {
   index(req, res) {
