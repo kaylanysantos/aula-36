@@ -67,7 +67,7 @@ class UsuarioDonoController {
       if (isNaN(id)) {
         throw new Error("O ID não foi passado");
       }
-  
+
       const usuario = buscarPeloId(id);
       if (!usuario) {
         return res.status(404).json({ mensagem: "Canal não encontrado" });
