@@ -1,33 +1,38 @@
-const { videos } = require("../mock/dados.json");
+const videosRepository = require("../services/videosServices");
 
 class videosService {
   encontrarTodos() {
-    return videos;
+    return videosRepository.encontrarTodos();
+  }
+
+   encontarComfiultros(filtros) {
+    const videos = videosRepository.encontrarTodos()
+    return this.filtarvideos(Videos, filtros);
+   }
+
+
+  filtarvideos(videos, filtrar) {
+    return videos.filter(videos =>{
+      const tituloValido = filtros.titulo ? video.titulo.toloWercase().includes(filtros.titulo.toloWercase()) :  true;
+
+      return tituloValido;
+    })
   }
 
   buscarPeloId(id) {
-    return videos.find((v) => v.id === id);
+    return videosRepository.buscarPelo(id);
   }
-
+  
   adicionar(video) {
-    return videos.push(video);
+    return videosRepository.adicionar(video);
   }
 
   atualizar(id, videoAtualizado) {
-    const video = this.buscarPeloId(id);
-
-    video.titulo = videoAtualizado.titulo;
-    video.descricao = videoAtualizado.descricao;
-    video.quantidadeViews = videoAtualizado.quantidadeViews;
-    video.canalID = videoAtualizado.canalID;
-
-    return video;
+    return videosRepository.atualizar(video);
   }
 
   excluir(id) {
-    const indiceDoVideo = videos.findIndex((v) => v.id === id);
-
-    return videos.splice(indiceDoVideo, 1);
+    return videosRepository.excluir(id);
   }
 }
 
